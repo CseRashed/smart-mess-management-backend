@@ -9,7 +9,7 @@ require('dotenv').config();
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const serviceAccount = require(`${process.env.FIREBASE_SERVICE_ACCOUNT_PATH}`);
+// const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
 const sendConfirmationEmail = require('./config/emailSender');
 
 const app = express();
@@ -20,9 +20,9 @@ app.use(cors());
 app.use(express.json());
 
 // Firebase Admin Initialization
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
 
 // MongoDB Setup
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}.gfesh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -153,23 +153,16 @@ app.delete('/members/:id', verifyToken, verifyManager, async (req, res) => {
     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
     if (!user) return res.status(404).json({ error: 'User not found in DB' });
 
-    // Delete from Firebase
-    if (user.firebaseUID) {
-      await admin.auth().deleteUser(user.firebaseUID);
-    } else {
-      const firebaseUser = await admin.auth().getUserByEmail(user.email);
-      await admin.auth().deleteUser(firebaseUser.uid);
-    }
-
-    // Delete from DB
+    // Delete from DB only
     const result = await userCollection.deleteOne({ _id: new ObjectId(userId) });
 
-    res.json({ message: 'User deleted from DB and Firebase' }); // ✅ Match frontend expectation
+    res.json({ message: 'User deleted from DB' }); // Match frontend expectation
   } catch (err) {
     console.error('❌ Error deleting user:', err);
     res.status(500).json({ error: 'Failed to delete user' });
   }
 });
+
 
 
     /** --------------------| Mess Routes |-------------------- */
