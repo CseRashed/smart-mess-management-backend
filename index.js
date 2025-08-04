@@ -9,7 +9,7 @@ require('dotenv').config();
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON.replace(/\\n/g, '\n'));
 const sendConfirmationEmail = require('./config/emailSender');
 
 const app = express();
