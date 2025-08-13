@@ -182,7 +182,7 @@ app.delete('/members/:id', verifyToken, verifyManager, async (req, res) => {
 
   //just token send : login condition
   if (!action && email) {
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '2d' });
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '60d' });
     return res.send({ success: true, token });
   }
 
@@ -200,7 +200,7 @@ app.delete('/members/:id', verifyToken, verifyManager, async (req, res) => {
     const messResult = await messCollection.insertOne({ mess, uniqueId });
     const userResult = await userCollection.insertOne({ name, email, uniqueId, role: 'Manager' });
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '2d' });
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '60d' });
     return res.send({ success: true, messResult, userResult, uniqueId, token });
   }
 
