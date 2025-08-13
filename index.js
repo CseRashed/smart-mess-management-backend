@@ -72,7 +72,7 @@ async function run() {
 // --------------jwt collection------------------//
 app.post('/jwt',async(req,res)=>{
   const user=req.body;
-  const token=jwt.sign(user,process.env.JWT_SECRET,{expiresIn:'2d'})
+  const token=jwt.sign(user,process.env.JWT_SECRET,{expiresIn:'60d'})
   res.send({token})
 })
 // ----------------| Verify Token| -----------------//
